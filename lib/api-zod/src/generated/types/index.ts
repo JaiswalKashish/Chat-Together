@@ -3,29 +3,56 @@
  * Do not edit manually.
  * Api
  * ChaloTogether API specification
- * OpenAPI spec version: 0.1.0
+ * OpenAPI spec version: 0.2.0
  */
 
 export * from './authResponse';
+export * from './bookedRideSummary';
+export * from './booking';
+export * from './bookingInput';
+export * from './bookingStatus';
+export * from './bookingWithPassenger';
 export * from './college';
 export * from './community';
+export * from './communityDetail';
+export * from './communityMember';
+export * from './conversation';
 export * from './dashboardSummary';
 export * from './dashboardSummaryVerificationStatus';
 export * from './emailVerification';
 export * from './errorResponse';
 export * from './event';
 export * from './eventType';
+export * from './getMessagesParams';
 export * from './healthStatus';
+export * from './locationInput';
 export * from './loginInput';
+export * from './markReadInput';
+export * from './matchBreakdown';
+export * from './message';
+export * from './messageInput';
+export * from './myRides';
+export * from './otpInput';
 export * from './phoneInput';
 export * from './phoneVerification';
+export * from './publicTrip';
+export * from './publicUserProfile';
 export * from './resendVerificationInput';
-export * from './ride';
-export * from './rideStatus';
+export * from './rideDetail';
+export * from './rideDetailStatus';
+export * from './rideInput';
+export * from './rideInputFuelType';
+export * from './rideInputVehicleType';
+export * from './rideSearchResult';
+export * from './searchRidesParams';
 export * from './studentIdInput';
 export * from './studentVerification';
 export * from './studentVerificationStatus';
 export * from './successResponse';
+export * from './trustedContact';
+export * from './trustedContactInput';
+export * from './trustedContactInputRelationship';
+export * from './trustedContactRelationship';
 export * from './user';
 export * from './userProfile';
 export * from './userProfileUpdate';

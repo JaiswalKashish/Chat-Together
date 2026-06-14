@@ -3,7 +3,7 @@
  * Do not edit manually.
  * Api
  * ChaloTogether API specification
- * OpenAPI spec version: 0.1.0
+ * OpenAPI spec version: 0.2.0
  */
 export interface HealthStatus {
   status: string;
@@ -15,6 +15,10 @@ export interface ErrorResponse {
 
 export interface SuccessResponse {
   message: string;
+  /** @nullable */
+  demoToken?: string | null;
+  /** @nullable */
+  demoOtp?: string | null;
 }
 
 export interface User {
@@ -53,6 +57,21 @@ export interface UserProfile {
   phoneVerified: boolean;
   studentIdVerified: boolean;
   isVerified: boolean;
+  reliabilityScore?: number;
+  createdAt: string;
+}
+
+export interface PublicUserProfile {
+  id: number;
+  fullName: string;
+  college: string;
+  department: string;
+  year: string;
+  /** @nullable */
+  profilePhotoUrl?: string | null;
+  isVerified: boolean;
+  reliabilityScore: number;
+  totalRides?: number;
   createdAt: string;
 }
 
@@ -155,6 +174,35 @@ export interface Community {
   createdAt: string;
 }
 
+export interface CommunityDetail {
+  id: number;
+  name: string;
+  collegeId: number;
+  collegeName: string;
+  /** @nullable */
+  description?: string | null;
+  memberCount: number;
+  activeMembers: number;
+  upcomingEvents: number;
+  communityRides: number;
+  isJoined: boolean;
+  createdAt: string;
+}
+
+export interface CommunityMember {
+  id: number;
+  fullName: string;
+  college: string;
+  department: string;
+  year: string;
+  /** @nullable */
+  profilePhotoUrl?: string | null;
+  isVerified: boolean;
+  reliabilityScore: number;
+  totalRides?: number;
+  joinedAt: string;
+}
+
 export type EventType = typeof EventType[keyof typeof EventType];
 
 
@@ -182,27 +230,258 @@ export interface Event {
   createdAt: string;
 }
 
-export type RideStatus = typeof RideStatus[keyof typeof RideStatus];
+export type RideInputVehicleType = typeof RideInputVehicleType[keyof typeof RideInputVehicleType];
 
 
-export const RideStatus = {
-  active: 'active',
-  full: 'full',
+export const RideInputVehicleType = {
+  car: 'car',
+  bike: 'bike',
+  auto: 'auto',
+  van: 'van',
+} as const;
+
+export type RideInputFuelType = typeof RideInputFuelType[keyof typeof RideInputFuelType];
+
+
+export const RideInputFuelType = {
+  petrol: 'petrol',
+  diesel: 'diesel',
+  electric: 'electric',
+  cng: 'cng',
+} as const;
+
+export interface RideInput {
+  origin: string;
+  destination: string;
+  waypoints?: string[];
+  date: string;
+  time: string;
+  vehicleType: RideInputVehicleType;
+  vehicleNumber: string;
+  fuelType: RideInputFuelType;
+  mileage: number;
+  totalSeats: number;
+  farePerSeat: number;
+  isRecurring?: boolean;
+  recurringDays?: string[];
+  /** @nullable */
+  eventId?: number | null;
+  /** @nullable */
+  notes?: string | null;
+}
+
+export type RideDetailStatus = typeof RideDetailStatus[keyof typeof RideDetailStatus];
+
+
+export const RideDetailStatus = {
+  open: 'open',
+  booking_requested: 'booking_requested',
+  accepted: 'accepted',
+  passenger_picked_up: 'passenger_picked_up',
+  ride_started: 'ride_started',
   completed: 'completed',
   cancelled: 'cancelled',
 } as const;
 
-export interface Ride {
+export interface RideDetail {
   id: number;
   offererId: number;
-  offererName?: string;
-  status: RideStatus;
+  offererName: string;
+  offererCollege?: string;
+  offererVerified?: boolean;
+  offererReliabilityScore?: number;
+  status: RideDetailStatus;
   origin: string;
   destination: string;
+  waypoints?: string[];
   date: string;
+  time: string;
+  vehicleType: string;
+  vehicleNumber: string;
+  fuelType?: string;
+  totalSeats: number;
   seatsAvailable: number;
+  farePerSeat: number;
+  isRecurring?: boolean;
   /** @nullable */
-  eventId?: number | null;
+  notes?: string | null;
+  /** @nullable */
+  currentLat?: number | null;
+  /** @nullable */
+  currentLng?: number | null;
+  /** @nullable */
+  trackingToken?: string | null;
+  createdAt: string;
+}
+
+export interface MatchBreakdown {
+  destinationMatch: number;
+  routeOverlap: number;
+  timeMatch: number;
+  pickupDistance: number;
+  driverRating: number;
+}
+
+export interface RideSearchResult {
+  ride: RideDetail;
+  matchScore: number;
+  matchBreakdown: MatchBreakdown;
+}
+
+export interface BookingInput {
+  pickupPoint: string;
+  /** @nullable */
+  notes?: string | null;
+}
+
+export type BookingStatus = typeof BookingStatus[keyof typeof BookingStatus];
+
+
+export const BookingStatus = {
+  requested: 'requested',
+  accepted: 'accepted',
+  rejected: 'rejected',
+  picked_up: 'picked_up',
+  completed: 'completed',
+  cancelled: 'cancelled',
+} as const;
+
+export interface Booking {
+  id: number;
+  rideId: number;
+  passengerId: number;
+  passengerName?: string;
+  status: BookingStatus;
+  pickupPoint: string;
+  farePerSeat?: number;
+  otp: string;
+  /** @nullable */
+  notes?: string | null;
+  createdAt: string;
+}
+
+export interface BookingWithPassenger {
+  id: number;
+  rideId: number;
+  passengerId: number;
+  passengerName: string;
+  passengerCollege: string;
+  passengerVerified: boolean;
+  passengerReliabilityScore?: number;
+  /** @nullable */
+  passengerPhoto?: string | null;
+  status: string;
+  pickupPoint: string;
+  farePerSeat?: number;
+  otp: string;
+  /** @nullable */
+  notes?: string | null;
+  createdAt: string;
+}
+
+export interface OtpInput {
+  otp: string;
+}
+
+export interface LocationInput {
+  lat: number;
+  lng: number;
+}
+
+export interface BookedRideSummary {
+  booking: Booking;
+  ride: RideDetail;
+}
+
+export interface MyRides {
+  offered: RideDetail[];
+  booked: BookedRideSummary[];
+  completed: RideDetail[];
+  cancelled: RideDetail[];
+}
+
+export interface Message {
+  id: number;
+  senderId: number;
+  senderName?: string;
+  receiverId: number;
+  content: string;
+  isRead: boolean;
+  createdAt: string;
+}
+
+export interface MessageInput {
+  receiverId: number;
+  content: string;
+}
+
+export interface MarkReadInput {
+  senderId: number;
+}
+
+export interface Conversation {
+  userId: number;
+  userName: string;
+  userCollege?: string;
+  /** @nullable */
+  userPhoto?: string | null;
+  isVerified?: boolean;
+  lastMessage: string;
+  unreadCount: number;
+  updatedAt: string;
+}
+
+export type TrustedContactRelationship = typeof TrustedContactRelationship[keyof typeof TrustedContactRelationship];
+
+
+export const TrustedContactRelationship = {
+  parent: 'parent',
+  guardian: 'guardian',
+  friend: 'friend',
+  sibling: 'sibling',
+  other: 'other',
+} as const;
+
+export interface TrustedContact {
+  id: number;
+  userId: number;
+  name: string;
+  phone: string;
+  relationship: TrustedContactRelationship;
+  createdAt: string;
+}
+
+export type TrustedContactInputRelationship = typeof TrustedContactInputRelationship[keyof typeof TrustedContactInputRelationship];
+
+
+export const TrustedContactInputRelationship = {
+  parent: 'parent',
+  guardian: 'guardian',
+  friend: 'friend',
+  sibling: 'sibling',
+  other: 'other',
+} as const;
+
+export interface TrustedContactInput {
+  name: string;
+  phone: string;
+  relationship: TrustedContactInputRelationship;
+}
+
+export interface PublicTrip {
+  rideId: number;
+  driverName: string;
+  vehicleType: string;
+  vehicleNumber: string;
+  origin: string;
+  destination: string;
+  status: string;
+  /** @nullable */
+  currentLat?: number | null;
+  /** @nullable */
+  currentLng?: number | null;
+  /** @nullable */
+  eta?: string | null;
   createdAt: string;
 }
 
@@ -220,6 +499,19 @@ export interface DashboardSummary {
   upcomingEvents: number;
   activeRides: number;
   verificationStatus: DashboardSummaryVerificationStatus;
+  totalRidesOffered?: number;
+  totalRidesBooked?: number;
   totalCommunityMembers?: number;
 }
+
+export type SearchRidesParams = {
+origin?: string;
+destination?: string;
+date?: string;
+time?: string;
+};
+
+export type GetMessagesParams = {
+userId: number;
+};
 

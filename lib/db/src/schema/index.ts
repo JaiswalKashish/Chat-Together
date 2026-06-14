@@ -4,3 +4,6 @@ export * from "./communities";
 export * from "./student_verifications";
 export * from "./events";
 export * from "./rides";
+export * from "./ride_bookings";
+export * from "./messages";
+export * from "./trusted_contacts";

@@ -3,7 +3,7 @@
  * Do not edit manually.
  * Api
  * ChaloTogether API specification
- * OpenAPI spec version: 0.1.0
+ * OpenAPI spec version: 0.2.0
  */
 import type { DashboardSummaryVerificationStatus } from './dashboardSummaryVerificationStatus';
 
@@ -12,5 +12,7 @@ export interface DashboardSummary {
   upcomingEvents: number;
   activeRides: number;
   verificationStatus: DashboardSummaryVerificationStatus;
+  totalRidesOffered?: number;
+  totalRidesBooked?: number;
   totalCommunityMembers?: number;
 }

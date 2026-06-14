@@ -2,30 +2,25 @@ openapi: 3.1.0
 info:
   # Do not change the title, if the title changes, the import paths will be broken
   title: Api
-  version: 0.1.0
+  version: 0.2.0
   description: ChaloTogether API specification
 servers:
   - url: /api
     description: Base API path
 tags:
   - name: health
-    description: Health operations
   - name: auth
-    description: Authentication operations
   - name: users
-    description: User operations
   - name: colleges
-    description: College operations
   - name: communities
-    description: Community operations
   - name: verification
-    description: Student verification operations
   - name: events
-    description: Events operations
   - name: rides
-    description: Rides operations
+  - name: bookings
   - name: dashboard
-    description: Dashboard operations
+  - name: chat
+  - name: trusted-contacts
+  - name: tracking
 
 paths:
   /healthz:
@@ -33,7 +28,6 @@ paths:
       operationId: healthCheck
       tags: [health]
       summary: Health check
-      description: Returns server health status
       responses:
         "200":
           description: Healthy
@@ -42,11 +36,11 @@ paths:
               schema:
                 $ref: "#/components/schemas/HealthStatus"
 
+  # ─── Auth ───────────────────────────────────────────────────────────────────
   /auth/register:
     post:
       operationId: registerUser
       tags: [auth]
-      summary: Register a new user
       requestBody:
         required: true
         content:
@@ -55,7 +49,7 @@ paths:
               $ref: "#/components/schemas/UserRegistration"
       responses:
         "201":
-          description: User registered successfully
+          description: Created
           content:
             application/json:
               schema:
@@ -67,7 +61,7 @@ paths:
               schema:
                 $ref: "#/components/schemas/ErrorResponse"
         "409":
-          description: Email already exists
+          description: Email exists
           content:
             application/json:
               schema:
@@ -77,7 +71,6 @@ paths:
     post:
       operationId: loginUser
       tags: [auth]
-      summary: Login with email or phone
       requestBody:
         required: true
         content:
@@ -86,13 +79,13 @@ paths:
               $ref: "#/components/schemas/LoginInput"
       responses:
         "200":
-          description: Login successful
+          description: OK
           content:
             application/json:
               schema:
                 $ref: "#/components/schemas/AuthResponse"
         "401":
-          description: Invalid credentials
+          description: Invalid
           content:
             application/json:
               schema:
@@ -102,16 +95,14 @@ paths:
     post:
       operationId: logoutUser
       tags: [auth]
-      summary: Logout current user
       responses:
         "204":
-          description: Logged out successfully
+          description: Logged out
 
   /auth/me:
     get:
       operationId: getCurrentUser
       tags: [auth]
-      summary: Get current authenticated user
       responses:
         "200":
           description: Current user
@@ -130,7 +121,6 @@ paths:
     post:
       operationId: verifyEmail
       tags: [auth]
-      summary: Verify email with token
       requestBody:
         required: true
         content:
@@ -139,13 +129,13 @@ paths:
               $ref: "#/components/schemas/EmailVerification"
       responses:
         "200":
-          description: Email verified
+          description: Verified
           content:
             application/json:
               schema:
                 $ref: "#/components/schemas/VerificationResult"
         "400":
-          description: Invalid or expired token
+          description: Invalid token
           content:
             application/json:
               schema:
@@ -155,7 +145,6 @@ paths:
     post:
       operationId: resendVerification
       tags: [auth]
-      summary: Resend email verification
       requestBody:
         required: true
         content:
@@ -164,7 +153,7 @@ paths:
               $ref: "#/components/schemas/ResendVerificationInput"
       responses:
         "200":
-          description: Verification email sent
+          description: Sent
           content:
             application/json:
               schema:
@@ -174,7 +163,6 @@ paths:
     post:
       operationId: sendPhoneOtp
       tags: [auth]
-      summary: Send OTP to phone number
       requestBody:
         required: true
         content:
@@ -183,7 +171,7 @@ paths:
               $ref: "#/components/schemas/PhoneInput"
       responses:
         "200":
-          description: OTP sent
+          description: Sent
           content:
             application/json:
               schema:
@@ -193,7 +181,6 @@ paths:
     post:
       operationId: verifyPhone
       tags: [auth]
-      summary: Verify phone with OTP
       requestBody:
         required: true
         content:
@@ -202,7 +189,7 @@ paths:
               $ref: "#/components/schemas/PhoneVerification"
       responses:
         "200":
-          description: Phone verified
+          description: Verified
           content:
             application/json:
               schema:
@@ -214,29 +201,27 @@ paths:
               schema:
                 $ref: "#/components/schemas/ErrorResponse"
 
+  # ─── Users ──────────────────────────────────────────────────────────────────
   /users/me:
     get:
       operationId: getMyProfile
       tags: [users]
-      summary: Get current user profile
       responses:
         "200":
-          description: User profile
+          description: Profile
           content:
             application/json:
               schema:
                 $ref: "#/components/schemas/UserProfile"
         "401":
-          description: Not authenticated
+          description: Unauthorized
           content:
             application/json:
               schema:
                 $ref: "#/components/schemas/ErrorResponse"
-
     patch:
       operationId: updateMyProfile
       tags: [users]
-      summary: Update current user profile
       requestBody:
         required: true
         content:
@@ -245,17 +230,41 @@ paths:
               $ref: "#/components/schemas/UserProfileUpdate"
       responses:
         "200":
-          description: Updated profile
+          description: Updated
           content:
             application/json:
               schema:
                 $ref: "#/components/schemas/UserProfile"
 
+  /users/{id}/profile:
+    get:
+      operationId: getUserProfile
+      tags: [users]
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: Public profile
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/PublicUserProfile"
+        "404":
+          description: Not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+
+  # ─── Verification ───────────────────────────────────────────────────────────
   /verification/student-id:
     post:
       operationId: submitStudentId
       tags: [verification]
-      summary: Submit student ID for verification
       requestBody:
         required: true
         content:
@@ -264,13 +273,13 @@ paths:
               $ref: "#/components/schemas/StudentIdInput"
       responses:
         "200":
-          description: Student ID submitted
+          description: Submitted
           content:
             application/json:
               schema:
                 $ref: "#/components/schemas/StudentVerification"
         "400":
-          description: College mismatch or invalid ID
+          description: Mismatch
           content:
             application/json:
               schema:
@@ -280,23 +289,22 @@ paths:
     get:
       operationId: getVerificationStatus
       tags: [verification]
-      summary: Get current user verification status
       responses:
         "200":
-          description: Verification status
+          description: Status
           content:
             application/json:
               schema:
                 $ref: "#/components/schemas/StudentVerification"
 
+  # ─── Colleges ───────────────────────────────────────────────────────────────
   /colleges:
     get:
       operationId: listColleges
       tags: [colleges]
-      summary: List all supported colleges
       responses:
         "200":
-          description: List of colleges
+          description: List
           content:
             application/json:
               schema:
@@ -304,14 +312,14 @@ paths:
                 items:
                   $ref: "#/components/schemas/College"
 
+  # ─── Communities ────────────────────────────────────────────────────────────
   /communities:
     get:
       operationId: listMyCommunities
       tags: [communities]
-      summary: List communities the current user has joined
       responses:
         "200":
-          description: User's communities
+          description: My communities
           content:
             application/json:
               schema:
@@ -323,7 +331,6 @@ paths:
     get:
       operationId: listAllCommunities
       tags: [communities]
-      summary: List all available communities
       responses:
         "200":
           description: All communities
@@ -334,11 +341,10 @@ paths:
                 items:
                   $ref: "#/components/schemas/Community"
 
-  /communities/{id}/join:
-    post:
-      operationId: joinCommunity
+  /communities/{id}:
+    get:
+      operationId: getCommunity
       tags: [communities]
-      summary: Join a community
       parameters:
         - name: id
           in: path
@@ -347,13 +353,57 @@ paths:
             type: integer
       responses:
         "200":
-          description: Joined community
+          description: Community detail
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/CommunityDetail"
+        "404":
+          description: Not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+
+  /communities/{id}/members:
+    get:
+      operationId: getCommunityMembers
+      tags: [communities]
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: Members
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/CommunityMember"
+
+  /communities/{id}/join:
+    post:
+      operationId: joinCommunity
+      tags: [communities]
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: Joined
           content:
             application/json:
               schema:
                 $ref: "#/components/schemas/SuccessResponse"
         "403":
-          description: Not verified to join
+          description: Not verified
           content:
             application/json:
               schema:
@@ -363,7 +413,6 @@ paths:
     post:
       operationId: leaveCommunity
       tags: [communities]
-      summary: Leave a community
       parameters:
         - name: id
           in: path
@@ -372,20 +421,20 @@ paths:
             type: integer
       responses:
         "200":
-          description: Left community
+          description: Left
           content:
             application/json:
               schema:
                 $ref: "#/components/schemas/SuccessResponse"
 
+  # ─── Events ─────────────────────────────────────────────────────────────────
   /events:
     get:
       operationId: listEvents
       tags: [events]
-      summary: List events
       responses:
         "200":
-          description: Events list
+          description: Events
           content:
             application/json:
               schema:
@@ -393,29 +442,434 @@ paths:
                 items:
                   $ref: "#/components/schemas/Event"
 
-  /rides:
-    get:
-      operationId: listRides
+  # ─── Rides ──────────────────────────────────────────────────────────────────
+  /rides/create:
+    post:
+      operationId: createRide
       tags: [rides]
-      summary: List rides
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/RideInput"
+      responses:
+        "201":
+          description: Created
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/RideDetail"
+        "400":
+          description: Invalid
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+
+  /rides/search:
+    get:
+      operationId: searchRides
+      tags: [rides]
+      parameters:
+        - name: origin
+          in: query
+          schema:
+            type: string
+        - name: destination
+          in: query
+          schema:
+            type: string
+        - name: date
+          in: query
+          schema:
+            type: string
+        - name: time
+          in: query
+          schema:
+            type: string
       responses:
         "200":
-          description: Rides list
+          description: Matching rides with scores
           content:
             application/json:
               schema:
                 type: array
                 items:
-                  $ref: "#/components/schemas/Ride"
+                  $ref: "#/components/schemas/RideSearchResult"
 
+  /rides/my:
+    get:
+      operationId: getMyRides
+      tags: [rides]
+      responses:
+        "200":
+          description: My rides
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/MyRides"
+
+  /rides/{id}:
+    get:
+      operationId: getRide
+      tags: [rides]
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: Ride detail
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/RideDetail"
+        "404":
+          description: Not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+
+  /rides/{id}/book:
+    post:
+      operationId: bookRide
+      tags: [rides]
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/BookingInput"
+      responses:
+        "201":
+          description: Booking requested
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Booking"
+        "400":
+          description: Invalid
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+
+  /rides/{id}/bookings:
+    get:
+      operationId: getRideBookings
+      tags: [rides]
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: Booking requests for driver
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/BookingWithPassenger"
+
+  /rides/{id}/cancel:
+    post:
+      operationId: cancelRide
+      tags: [rides]
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: Cancelled
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/SuccessResponse"
+
+  /rides/{id}/location:
+    post:
+      operationId: updateRideLocation
+      tags: [rides]
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/LocationInput"
+      responses:
+        "200":
+          description: Updated
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/SuccessResponse"
+
+  # ─── Bookings ────────────────────────────────────────────────────────────────
+  /bookings/{id}/accept:
+    post:
+      operationId: acceptBooking
+      tags: [bookings]
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: Accepted
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Booking"
+        "404":
+          description: Not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+
+  /bookings/{id}/reject:
+    post:
+      operationId: rejectBooking
+      tags: [bookings]
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: Rejected
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/SuccessResponse"
+
+  /bookings/{id}/verify-otp:
+    post:
+      operationId: verifyRideOtp
+      tags: [bookings]
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/OtpInput"
+      responses:
+        "200":
+          description: Verified
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/SuccessResponse"
+        "400":
+          description: Invalid OTP
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+
+  /bookings/{id}/complete:
+    post:
+      operationId: completeBooking
+      tags: [bookings]
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: Completed
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/SuccessResponse"
+
+  # ─── Chat ────────────────────────────────────────────────────────────────────
+  /chat/conversations:
+    get:
+      operationId: getConversations
+      tags: [chat]
+      responses:
+        "200":
+          description: Conversations list
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Conversation"
+
+  /chat/messages:
+    get:
+      operationId: getMessages
+      tags: [chat]
+      parameters:
+        - name: userId
+          in: query
+          required: true
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: Messages
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Message"
+
+  /chat/send:
+    post:
+      operationId: sendMessage
+      tags: [chat]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/MessageInput"
+      responses:
+        "201":
+          description: Sent
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Message"
+
+  /chat/read:
+    post:
+      operationId: markMessagesRead
+      tags: [chat]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/MarkReadInput"
+      responses:
+        "200":
+          description: Marked
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/SuccessResponse"
+
+  # ─── Trusted Contacts ────────────────────────────────────────────────────────
+  /trusted-contacts:
+    get:
+      operationId: listTrustedContacts
+      tags: [trusted-contacts]
+      responses:
+        "200":
+          description: Contacts
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/TrustedContact"
+    post:
+      operationId: addTrustedContact
+      tags: [trusted-contacts]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/TrustedContactInput"
+      responses:
+        "201":
+          description: Added
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/TrustedContact"
+
+  /trusted-contacts/{id}:
+    delete:
+      operationId: deleteTrustedContact
+      tags: [trusted-contacts]
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: Deleted
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/SuccessResponse"
+
+  # ─── Tracking ────────────────────────────────────────────────────────────────
+  /trips/{token}:
+    get:
+      operationId: getPublicTrip
+      tags: [tracking]
+      parameters:
+        - name: token
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Public trip info
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/PublicTrip"
+        "404":
+          description: Not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+
+  # ─── Dashboard ───────────────────────────────────────────────────────────────
   /dashboard/summary:
     get:
       operationId: getDashboardSummary
       tags: [dashboard]
-      summary: Get dashboard summary stats
       responses:
         "200":
-          description: Dashboard summary
+          description: Summary
           content:
             application/json:
               schema:
@@ -428,8 +882,7 @@ components:
       properties:
         status:
           type: string
-      required:
-        - status
+      required: [status]
 
     ErrorResponse:
       type: object
@@ -444,6 +897,10 @@ components:
       properties:
         message:
           type: string
+        demoToken:
+          type: ["string", "null"]
+        demoOtp:
+          type: ["string", "null"]
 
     AuthResponse:
       type: object
@@ -513,6 +970,33 @@ components:
           type: boolean
         isVerified:
           type: boolean
+        reliabilityScore:
+          type: integer
+        createdAt:
+          type: string
+
+    PublicUserProfile:
+      type: object
+      required: [id, fullName, college, department, year, isVerified, reliabilityScore, createdAt]
+      properties:
+        id:
+          type: integer
+        fullName:
+          type: string
+        college:
+          type: string
+        department:
+          type: string
+        year:
+          type: string
+        profilePhotoUrl:
+          type: ["string", "null"]
+        isVerified:
+          type: boolean
+        reliabilityScore:
+          type: integer
+        totalRides:
+          type: integer
         createdAt:
           type: string
 
@@ -670,6 +1154,58 @@ components:
         createdAt:
           type: string
 
+    CommunityDetail:
+      type: object
+      required: [id, name, collegeId, collegeName, memberCount, isJoined, activeMembers, upcomingEvents, communityRides, createdAt]
+      properties:
+        id:
+          type: integer
+        name:
+          type: string
+        collegeId:
+          type: integer
+        collegeName:
+          type: string
+        description:
+          type: ["string", "null"]
+        memberCount:
+          type: integer
+        activeMembers:
+          type: integer
+        upcomingEvents:
+          type: integer
+        communityRides:
+          type: integer
+        isJoined:
+          type: boolean
+        createdAt:
+          type: string
+
+    CommunityMember:
+      type: object
+      required: [id, fullName, college, department, year, isVerified, reliabilityScore, joinedAt]
+      properties:
+        id:
+          type: integer
+        fullName:
+          type: string
+        college:
+          type: string
+        department:
+          type: string
+        year:
+          type: string
+        profilePhotoUrl:
+          type: ["string", "null"]
+        isVerified:
+          type: boolean
+        reliabilityScore:
+          type: integer
+        totalRides:
+          type: integer
+        joinedAt:
+          type: string
+
     Event:
       type: object
       required: [id, title, type, date, collegeId, collegeName, createdAt]
@@ -696,9 +1232,51 @@ components:
         createdAt:
           type: string
 
-    Ride:
+    # ─── Rides ─────────────────────────────────────────────────────────────────
+    RideInput:
       type: object
-      required: [id, offererId, status, origin, destination, date, seatsAvailable, createdAt]
+      required: [origin, destination, date, time, vehicleType, vehicleNumber, fuelType, mileage, totalSeats, farePerSeat]
+      properties:
+        origin:
+          type: string
+        destination:
+          type: string
+        waypoints:
+          type: array
+          items:
+            type: string
+        date:
+          type: string
+        time:
+          type: string
+        vehicleType:
+          type: string
+          enum: [car, bike, auto, van]
+        vehicleNumber:
+          type: string
+        fuelType:
+          type: string
+          enum: [petrol, diesel, electric, cng]
+        mileage:
+          type: number
+        totalSeats:
+          type: integer
+        farePerSeat:
+          type: number
+        isRecurring:
+          type: boolean
+        recurringDays:
+          type: array
+          items:
+            type: string
+        eventId:
+          type: ["integer", "null"]
+        notes:
+          type: ["string", "null"]
+
+    RideDetail:
+      type: object
+      required: [id, offererId, offererName, status, origin, destination, date, time, vehicleType, vehicleNumber, totalSeats, seatsAvailable, farePerSeat, createdAt]
       properties:
         id:
           type: integer
@@ -706,22 +1284,309 @@ components:
           type: integer
         offererName:
           type: string
+        offererCollege:
+          type: string
+        offererVerified:
+          type: boolean
+        offererReliabilityScore:
+          type: integer
         status:
           type: string
-          enum: [active, full, completed, cancelled]
+          enum: [open, booking_requested, accepted, passenger_picked_up, ride_started, completed, cancelled]
         origin:
           type: string
         destination:
           type: string
+        waypoints:
+          type: array
+          items:
+            type: string
         date:
           type: string
+        time:
+          type: string
+        vehicleType:
+          type: string
+        vehicleNumber:
+          type: string
+        fuelType:
+          type: string
+        totalSeats:
+          type: integer
         seatsAvailable:
           type: integer
-        eventId:
-          type: ["integer", "null"]
+        farePerSeat:
+          type: number
+        isRecurring:
+          type: boolean
+        notes:
+          type: ["string", "null"]
+        currentLat:
+          type: ["number", "null"]
+        currentLng:
+          type: ["number", "null"]
+        trackingToken:
+          type: ["string", "null"]
         createdAt:
           type: string
 
+    RideSearchResult:
+      type: object
+      required: [ride, matchScore, matchBreakdown]
+      properties:
+        ride:
+          $ref: "#/components/schemas/RideDetail"
+        matchScore:
+          type: integer
+        matchBreakdown:
+          $ref: "#/components/schemas/MatchBreakdown"
+
+    MatchBreakdown:
+      type: object
+      required: [destinationMatch, routeOverlap, timeMatch, pickupDistance, driverRating]
+      properties:
+        destinationMatch:
+          type: integer
+        routeOverlap:
+          type: integer
+        timeMatch:
+          type: integer
+        pickupDistance:
+          type: integer
+        driverRating:
+          type: integer
+
+    BookingInput:
+      type: object
+      required: [pickupPoint]
+      properties:
+        pickupPoint:
+          type: string
+        notes:
+          type: ["string", "null"]
+
+    Booking:
+      type: object
+      required: [id, rideId, passengerId, status, pickupPoint, otp, createdAt]
+      properties:
+        id:
+          type: integer
+        rideId:
+          type: integer
+        passengerId:
+          type: integer
+        passengerName:
+          type: string
+        status:
+          type: string
+          enum: [requested, accepted, rejected, picked_up, completed, cancelled]
+        pickupPoint:
+          type: string
+        farePerSeat:
+          type: number
+        otp:
+          type: string
+        notes:
+          type: ["string", "null"]
+        createdAt:
+          type: string
+
+    BookingWithPassenger:
+      type: object
+      required: [id, rideId, passengerId, passengerName, passengerCollege, passengerVerified, status, pickupPoint, otp, createdAt]
+      properties:
+        id:
+          type: integer
+        rideId:
+          type: integer
+        passengerId:
+          type: integer
+        passengerName:
+          type: string
+        passengerCollege:
+          type: string
+        passengerVerified:
+          type: boolean
+        passengerReliabilityScore:
+          type: integer
+        passengerPhoto:
+          type: ["string", "null"]
+        status:
+          type: string
+        pickupPoint:
+          type: string
+        farePerSeat:
+          type: number
+        otp:
+          type: string
+        notes:
+          type: ["string", "null"]
+        createdAt:
+          type: string
+
+    OtpInput:
+      type: object
+      required: [otp]
+      properties:
+        otp:
+          type: string
+
+    LocationInput:
+      type: object
+      required: [lat, lng]
+      properties:
+        lat:
+          type: number
+        lng:
+          type: number
+
+    MyRides:
+      type: object
+      required: [offered, booked, completed, cancelled]
+      properties:
+        offered:
+          type: array
+          items:
+            $ref: "#/components/schemas/RideDetail"
+        booked:
+          type: array
+          items:
+            $ref: "#/components/schemas/BookedRideSummary"
+        completed:
+          type: array
+          items:
+            $ref: "#/components/schemas/RideDetail"
+        cancelled:
+          type: array
+          items:
+            $ref: "#/components/schemas/RideDetail"
+
+    BookedRideSummary:
+      type: object
+      required: [booking, ride]
+      properties:
+        booking:
+          $ref: "#/components/schemas/Booking"
+        ride:
+          $ref: "#/components/schemas/RideDetail"
+
+    # ─── Chat ──────────────────────────────────────────────────────────────────
+    Message:
+      type: object
+      required: [id, senderId, receiverId, content, isRead, createdAt]
+      properties:
+        id:
+          type: integer
+        senderId:
+          type: integer
+        senderName:
+          type: string
+        receiverId:
+          type: integer
+        content:
+          type: string
+        isRead:
+          type: boolean
+        createdAt:
+          type: string
+
+    MessageInput:
+      type: object
+      required: [receiverId, content]
+      properties:
+        receiverId:
+          type: integer
+        content:
+          type: string
+
+    MarkReadInput:
+      type: object
+      required: [senderId]
+      properties:
+        senderId:
+          type: integer
+
+    Conversation:
+      type: object
+      required: [userId, userName, lastMessage, unreadCount, updatedAt]
+      properties:
+        userId:
+          type: integer
+        userName:
+          type: string
+        userCollege:
+          type: string
+        userPhoto:
+          type: ["string", "null"]
+        isVerified:
+          type: boolean
+        lastMessage:
+          type: string
+        unreadCount:
+          type: integer
+        updatedAt:
+          type: string
+
+    # ─── Trusted Contacts ──────────────────────────────────────────────────────
+    TrustedContact:
+      type: object
+      required: [id, userId, name, phone, relationship, createdAt]
+      properties:
+        id:
+          type: integer
+        userId:
+          type: integer
+        name:
+          type: string
+        phone:
+          type: string
+        relationship:
+          type: string
+          enum: [parent, guardian, friend, sibling, other]
+        createdAt:
+          type: string
+
+    TrustedContactInput:
+      type: object
+      required: [name, phone, relationship]
+      properties:
+        name:
+          type: string
+        phone:
+          type: string
+        relationship:
+          type: string
+          enum: [parent, guardian, friend, sibling, other]
+
+    # ─── Tracking ──────────────────────────────────────────────────────────────
+    PublicTrip:
+      type: object
+      required: [rideId, driverName, vehicleType, vehicleNumber, origin, destination, status, createdAt]
+      properties:
+        rideId:
+          type: integer
+        driverName:
+          type: string
+        vehicleType:
+          type: string
+        vehicleNumber:
+          type: string
+        origin:
+          type: string
+        destination:
+          type: string
+        status:
+          type: string
+        currentLat:
+          type: ["number", "null"]
+        currentLng:
+          type: ["number", "null"]
+        eta:
+          type: ["string", "null"]
+        createdAt:
+          type: string
+
+    # ─── Dashboard ─────────────────────────────────────────────────────────────
     DashboardSummary:
       type: object
       required: [communitiesJoined, upcomingEvents, activeRides, verificationStatus]
@@ -735,5 +1600,9 @@ components:
         verificationStatus:
           type: string
           enum: [incomplete, pending, verified]
+        totalRidesOffered:
+          type: integer
+        totalRidesBooked:
+          type: integer
         totalCommunityMembers:
           type: integer

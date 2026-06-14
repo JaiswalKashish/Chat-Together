@@ -1,0 +1,528 @@
+CHALOTOGETHER PHASE 2 – COMMUNITIES + RIDE MANAGEMENT + LIVE TRACKING
+
+IMPORTANT
+
+Build real functionality.
+
+Do not create mock APIs.
+
+Do not create fake rides.
+
+Do not create fake users.
+
+Do not generate sample data.
+
+All modules must be connected to PostgreSQL and work with real authenticated users.
+
+==================================================
+
+COMMUNITY SYSTEM
+
+After successful verification and registration:
+
+Automatically assign student to their college community.
+
+Example:
+
+College:
+SRM Ramapuram
+
+Automatically Join:
+
+SRM Ramapuram Community
+
+==================================================
+
+COMMUNITY PAGE
+
+Display:
+
+Community Name
+
+Total Members
+
+Active Members
+
+Upcoming Events
+
+Community Rides
+
+==================================================
+
+MEMBERS TAB
+
+Show all verified students from that community.
+
+Each member card:
+
+* Profile Photo
+* Name
+* Department
+* Year
+* Reliability Score
+* Verified Badge
+
+Example:
+
+Rahul Kumar ✓
+
+CSE
+
+3rd Year
+
+Reliability Score: 95
+
+==================================================
+
+DIRECT MESSAGING
+
+Students can message other verified students.
+
+Features:
+
+* Real-time messaging
+* Read receipts
+* Online status
+* Message notifications
+
+Backend:
+
+Socket.io
+
+Endpoints:
+
+POST /chat/send
+
+GET /chat/messages
+
+==================================================
+
+RIDE MANAGEMENT SYSTEM
+
+Create complete Uber-style ride lifecycle.
+
+==================================================
+
+OFFER RIDE
+
+Form Fields:
+
+Source
+
+Destination
+
+Date
+
+Time
+
+Vehicle Type
+
+Vehicle Number
+
+Fuel Type
+
+Mileage
+
+Available Seats
+
+Recurring Ride Option
+
+==================================================
+
+CREATE RIDE
+
+Endpoint:
+
+POST /rides/create
+
+Store:
+
+ride_id
+
+driver_id
+
+source
+
+destination
+
+date
+
+time
+
+available_seats
+
+status
+
+vehicle_type
+
+vehicle_number
+
+==================================================
+
+GOOGLE MAPS INTEGRATION
+
+When ride created:
+
+Generate route using Google Directions API.
+
+Store:
+
+polyline
+
+distance
+
+duration
+
+estimated_fuel_cost
+
+==================================================
+
+FIND RIDE
+
+Search Fields:
+
+Pickup Location
+
+Destination
+
+Date
+
+Time
+
+==================================================
+
+AI ROUTE MATCHING
+
+Match based on:
+
+* Destination
+* Route overlap
+* Intermediate pickup points
+* Time overlap
+* Available seats
+
+Example:
+
+Driver:
+
+Tambaram → Chromepet → Guindy → Vadapalani → Porur → SRM
+
+Passenger:
+
+Vadapalani → SRM
+
+Match Found
+
+==================================================
+
+MATCH SCORE
+
+Calculate:
+
+Route Overlap = 40%
+
+Time Match = 30%
+
+Pickup Distance = 15%
+
+Destination Match = 10%
+
+Driver Rating = 5%
+
+Display:
+
+95% Match
+
+==================================================
+
+RIDE MARKETPLACE
+
+Ride card should show:
+
+Driver Name
+
+Verified Badge
+
+Vehicle
+
+Available Seats
+
+Pickup Point
+
+ETA
+
+Match Score
+
+Fare
+
+Book Ride Button
+
+==================================================
+
+RIDE BOOKING
+
+Passenger clicks:
+
+Book Ride
+
+Backend:
+
+POST /rides/book
+
+==================================================
+
+DRIVER NOTIFICATION
+
+Driver receives:
+
+New Booking Request
+
+Passenger Name
+
+Pickup Point
+
+Destination
+
+Accept
+
+Reject
+
+==================================================
+
+ACCEPTED BOOKING
+
+Passenger receives:
+
+Booking Confirmed
+
+Driver Name
+
+Vehicle Number
+
+Pickup Point
+
+Fare Locked
+
+Pickup ETA
+
+==================================================
+
+PASSENGER OTP SYSTEM
+
+Generate random OTP after booking confirmation.
+
+Example:
+
+3481
+
+Passenger sees OTP.
+
+Driver sees OTP only after reaching pickup point.
+
+==================================================
+
+PICKUP VERIFICATION
+
+Driver enters passenger OTP.
+
+If OTP matches:
+
+Ride Status:
+
+Passenger Picked Up
+
+This prevents fake ride starts.
+
+==================================================
+
+LIVE RIDE TRACKING
+
+After ride starts:
+
+Track driver location in real time.
+
+Use:
+
+Google Maps
+
+Geolocation API
+
+Socket.io
+
+Show:
+
+* Current Location
+* Route Progress
+* ETA
+* Remaining Distance
+
+==================================================
+
+LIVE LOCATION SHARING
+
+Passengers can share trip with trusted contacts.
+
+Button:
+
+Share Trip
+
+Generate secure tracking link.
+
+Example:
+
+https://chalotogether.com/trip/xyz123
+
+Trusted contact can view:
+
+* Driver Name
+* Vehicle Number
+* Current Location
+* Destination
+* ETA
+
+No login required for tracking link.
+
+==================================================
+
+TRUSTED CONTACTS
+
+Allow user to add:
+
+Parent
+
+Guardian
+
+Friend
+
+Store:
+
+Name
+
+Phone Number
+
+Relationship
+
+==================================================
+
+EMERGENCY SOS
+
+One-click SOS button.
+
+When pressed:
+
+Send alerts to trusted contacts.
+
+Share:
+
+* Current Location
+* Ride Details
+* Driver Information
+* Time
+
+==================================================
+
+REAL-TIME RIDE STATUS
+
+Statuses:
+
+Open
+
+Booking Requested
+
+Accepted
+
+Passenger Picked Up
+
+Ride Started
+
+Ride Completed
+
+Cancelled
+
+==================================================
+
+MY RIDES PAGE
+
+Tabs:
+
+Upcoming
+
+Offered
+
+Booked
+
+Completed
+
+Cancelled
+
+==================================================
+
+OFFERED RIDES
+
+Driver View:
+
+Passengers Joined
+
+Available Seats
+
+Booking Requests
+
+Ride Status
+
+==================================================
+
+BOOKED RIDES
+
+Passenger View:
+
+Driver
+
+Vehicle
+
+Pickup Location
+
+OTP
+
+Fare
+
+Status
+
+==================================================
+
+LIVE UPDATES
+
+Use Socket.io for:
+
+New Ride
+
+Booking Requests
+
+Booking Acceptance
+
+Ride Start
+
+Ride Completion
+
+Messages
+
+Location Updates
+
+==================================================
+
+EMPTY STATES
+
+No fake rides.
+
+No fake users.
+
+No fake bookings.
+
+If database empty:
+
+"No rides available yet."
+
+"Be the first student to offer a ride."
+
+==================================================
+
+Build this as a real production-ready student mobility platform with actual backend connectivity and real-time functionality.

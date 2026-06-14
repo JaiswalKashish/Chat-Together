@@ -3,13 +3,12 @@
  * Do not edit manually.
  * Api
  * ChaloTogether API specification
- * OpenAPI spec version: 0.1.0
+ * OpenAPI spec version: 0.2.0
  */
 import * as zod from 'zod';
 
 
 /**
- * Returns server health status
  * @summary Health check
  */
 export const HealthCheckResponse = zod.object({
@@ -17,9 +16,6 @@ export const HealthCheckResponse = zod.object({
 })
 
 
-/**
- * @summary Register a new user
- */
 export const registerUserBodyFullNameMin = 2;
 
 export const registerUserBodyPasswordMin = 8;
@@ -37,9 +33,6 @@ export const RegisterUserBody = zod.object({
 })
 
 
-/**
- * @summary Login with email or phone
- */
 export const LoginUserBody = zod.object({
   "identifier": zod.string().describe('Email or phone number'),
   "password": zod.string()
@@ -65,9 +58,6 @@ export const LoginUserResponse = zod.object({
 })
 
 
-/**
- * @summary Get current authenticated user
- */
 export const GetCurrentUserResponse = zod.object({
   "id": zod.number(),
   "fullName": zod.string(),
@@ -85,9 +75,6 @@ export const GetCurrentUserResponse = zod.object({
 })
 
 
-/**
- * @summary Verify email with token
- */
 export const VerifyEmailBody = zod.object({
   "token": zod.string()
 })
@@ -98,33 +85,28 @@ export const VerifyEmailResponse = zod.object({
 })
 
 
-/**
- * @summary Resend email verification
- */
 export const ResendVerificationBody = zod.object({
   "email": zod.string()
 })
 
 export const ResendVerificationResponse = zod.object({
-  "message": zod.string()
+  "message": zod.string(),
+  "demoToken": zod.string().nullish(),
+  "demoOtp": zod.string().nullish()
 })
 
 
-/**
- * @summary Send OTP to phone number
- */
 export const SendPhoneOtpBody = zod.object({
   "phone": zod.string()
 })
 
 export const SendPhoneOtpResponse = zod.object({
-  "message": zod.string()
+  "message": zod.string(),
+  "demoToken": zod.string().nullish(),
+  "demoOtp": zod.string().nullish()
 })
 
 
-/**
- * @summary Verify phone with OTP
- */
 export const VerifyPhoneBody = zod.object({
   "phone": zod.string(),
   "otp": zod.string()
@@ -136,9 +118,6 @@ export const VerifyPhoneResponse = zod.object({
 })
 
 
-/**
- * @summary Get current user profile
- */
 export const GetMyProfileResponse = zod.object({
   "id": zod.number(),
   "fullName": zod.string(),
@@ -152,13 +131,11 @@ export const GetMyProfileResponse = zod.object({
   "phoneVerified": zod.boolean(),
   "studentIdVerified": zod.boolean(),
   "isVerified": zod.boolean(),
+  "reliabilityScore": zod.number().optional(),
   "createdAt": zod.string()
 })
 
 
-/**
- * @summary Update current user profile
- */
 export const UpdateMyProfileBody = zod.object({
   "fullName": zod.string().optional(),
   "department": zod.string().optional(),
@@ -179,13 +156,29 @@ export const UpdateMyProfileResponse = zod.object({
   "phoneVerified": zod.boolean(),
   "studentIdVerified": zod.boolean(),
   "isVerified": zod.boolean(),
+  "reliabilityScore": zod.number().optional(),
   "createdAt": zod.string()
 })
 
 
-/**
- * @summary Submit student ID for verification
- */
+export const GetUserProfileParams = zod.object({
+  "id": zod.coerce.number()
+})
+
+export const GetUserProfileResponse = zod.object({
+  "id": zod.number(),
+  "fullName": zod.string(),
+  "college": zod.string(),
+  "department": zod.string(),
+  "year": zod.string(),
+  "profilePhotoUrl": zod.string().nullish(),
+  "isVerified": zod.boolean(),
+  "reliabilityScore": zod.number(),
+  "totalRides": zod.number().optional(),
+  "createdAt": zod.string()
+})
+
+
 export const SubmitStudentIdBody = zod.object({
   "studentIdImageUrl": zod.string(),
   "college": zod.string()
@@ -204,9 +197,6 @@ export const SubmitStudentIdResponse = zod.object({
 })
 
 
-/**
- * @summary Get current user verification status
- */
 export const GetVerificationStatusResponse = zod.object({
   "id": zod.number(),
   "userId": zod.number(),
@@ -220,9 +210,6 @@ export const GetVerificationStatusResponse = zod.object({
 })
 
 
-/**
- * @summary List all supported colleges
- */
 export const ListCollegesResponseItem = zod.object({
   "id": zod.number(),
   "name": zod.string(),
@@ -234,9 +221,6 @@ export const ListCollegesResponseItem = zod.object({
 export const ListCollegesResponse = zod.array(ListCollegesResponseItem)
 
 
-/**
- * @summary List communities the current user has joined
- */
 export const ListMyCommunitiesResponseItem = zod.object({
   "id": zod.number(),
   "name": zod.string(),
@@ -250,9 +234,6 @@ export const ListMyCommunitiesResponseItem = zod.object({
 export const ListMyCommunitiesResponse = zod.array(ListMyCommunitiesResponseItem)
 
 
-/**
- * @summary List all available communities
- */
 export const ListAllCommunitiesResponseItem = zod.object({
   "id": zod.number(),
   "name": zod.string(),
@@ -266,33 +247,66 @@ export const ListAllCommunitiesResponseItem = zod.object({
 export const ListAllCommunitiesResponse = zod.array(ListAllCommunitiesResponseItem)
 
 
-/**
- * @summary Join a community
- */
+export const GetCommunityParams = zod.object({
+  "id": zod.coerce.number()
+})
+
+export const GetCommunityResponse = zod.object({
+  "id": zod.number(),
+  "name": zod.string(),
+  "collegeId": zod.number(),
+  "collegeName": zod.string(),
+  "description": zod.string().nullish(),
+  "memberCount": zod.number(),
+  "activeMembers": zod.number(),
+  "upcomingEvents": zod.number(),
+  "communityRides": zod.number(),
+  "isJoined": zod.boolean(),
+  "createdAt": zod.string()
+})
+
+
+export const GetCommunityMembersParams = zod.object({
+  "id": zod.coerce.number()
+})
+
+export const GetCommunityMembersResponseItem = zod.object({
+  "id": zod.number(),
+  "fullName": zod.string(),
+  "college": zod.string(),
+  "department": zod.string(),
+  "year": zod.string(),
+  "profilePhotoUrl": zod.string().nullish(),
+  "isVerified": zod.boolean(),
+  "reliabilityScore": zod.number(),
+  "totalRides": zod.number().optional(),
+  "joinedAt": zod.string()
+})
+export const GetCommunityMembersResponse = zod.array(GetCommunityMembersResponseItem)
+
+
 export const JoinCommunityParams = zod.object({
   "id": zod.coerce.number()
 })
 
 export const JoinCommunityResponse = zod.object({
-  "message": zod.string()
+  "message": zod.string(),
+  "demoToken": zod.string().nullish(),
+  "demoOtp": zod.string().nullish()
 })
 
 
-/**
- * @summary Leave a community
- */
 export const LeaveCommunityParams = zod.object({
   "id": zod.coerce.number()
 })
 
 export const LeaveCommunityResponse = zod.object({
-  "message": zod.string()
+  "message": zod.string(),
+  "demoToken": zod.string().nullish(),
+  "demoOtp": zod.string().nullish()
 })
 
 
-/**
- * @summary List events
- */
 export const ListEventsResponseItem = zod.object({
   "id": zod.number(),
   "title": zod.string(),
@@ -308,32 +322,441 @@ export const ListEventsResponseItem = zod.object({
 export const ListEventsResponse = zod.array(ListEventsResponseItem)
 
 
-/**
- * @summary List rides
- */
-export const ListRidesResponseItem = zod.object({
-  "id": zod.number(),
-  "offererId": zod.number(),
-  "offererName": zod.string().optional(),
-  "status": zod.enum(['active', 'full', 'completed', 'cancelled']),
+export const CreateRideBody = zod.object({
   "origin": zod.string(),
   "destination": zod.string(),
+  "waypoints": zod.array(zod.string()).optional(),
   "date": zod.string(),
-  "seatsAvailable": zod.number(),
+  "time": zod.string(),
+  "vehicleType": zod.enum(['car', 'bike', 'auto', 'van']),
+  "vehicleNumber": zod.string(),
+  "fuelType": zod.enum(['petrol', 'diesel', 'electric', 'cng']),
+  "mileage": zod.number(),
+  "totalSeats": zod.number(),
+  "farePerSeat": zod.number(),
+  "isRecurring": zod.boolean().optional(),
+  "recurringDays": zod.array(zod.string()).optional(),
   "eventId": zod.number().nullish(),
+  "notes": zod.string().nullish()
+})
+
+
+export const SearchRidesQueryParams = zod.object({
+  "origin": zod.coerce.string().optional(),
+  "destination": zod.coerce.string().optional(),
+  "date": zod.coerce.string().optional(),
+  "time": zod.coerce.string().optional()
+})
+
+export const SearchRidesResponseItem = zod.object({
+  "ride": zod.object({
+  "id": zod.number(),
+  "offererId": zod.number(),
+  "offererName": zod.string(),
+  "offererCollege": zod.string().optional(),
+  "offererVerified": zod.boolean().optional(),
+  "offererReliabilityScore": zod.number().optional(),
+  "status": zod.enum(['open', 'booking_requested', 'accepted', 'passenger_picked_up', 'ride_started', 'completed', 'cancelled']),
+  "origin": zod.string(),
+  "destination": zod.string(),
+  "waypoints": zod.array(zod.string()).optional(),
+  "date": zod.string(),
+  "time": zod.string(),
+  "vehicleType": zod.string(),
+  "vehicleNumber": zod.string(),
+  "fuelType": zod.string().optional(),
+  "totalSeats": zod.number(),
+  "seatsAvailable": zod.number(),
+  "farePerSeat": zod.number(),
+  "isRecurring": zod.boolean().optional(),
+  "notes": zod.string().nullish(),
+  "currentLat": zod.number().nullish(),
+  "currentLng": zod.number().nullish(),
+  "trackingToken": zod.string().nullish(),
+  "createdAt": zod.string()
+}),
+  "matchScore": zod.number(),
+  "matchBreakdown": zod.object({
+  "destinationMatch": zod.number(),
+  "routeOverlap": zod.number(),
+  "timeMatch": zod.number(),
+  "pickupDistance": zod.number(),
+  "driverRating": zod.number()
+})
+})
+export const SearchRidesResponse = zod.array(SearchRidesResponseItem)
+
+
+export const GetMyRidesResponse = zod.object({
+  "offered": zod.array(zod.object({
+  "id": zod.number(),
+  "offererId": zod.number(),
+  "offererName": zod.string(),
+  "offererCollege": zod.string().optional(),
+  "offererVerified": zod.boolean().optional(),
+  "offererReliabilityScore": zod.number().optional(),
+  "status": zod.enum(['open', 'booking_requested', 'accepted', 'passenger_picked_up', 'ride_started', 'completed', 'cancelled']),
+  "origin": zod.string(),
+  "destination": zod.string(),
+  "waypoints": zod.array(zod.string()).optional(),
+  "date": zod.string(),
+  "time": zod.string(),
+  "vehicleType": zod.string(),
+  "vehicleNumber": zod.string(),
+  "fuelType": zod.string().optional(),
+  "totalSeats": zod.number(),
+  "seatsAvailable": zod.number(),
+  "farePerSeat": zod.number(),
+  "isRecurring": zod.boolean().optional(),
+  "notes": zod.string().nullish(),
+  "currentLat": zod.number().nullish(),
+  "currentLng": zod.number().nullish(),
+  "trackingToken": zod.string().nullish(),
+  "createdAt": zod.string()
+})),
+  "booked": zod.array(zod.object({
+  "booking": zod.object({
+  "id": zod.number(),
+  "rideId": zod.number(),
+  "passengerId": zod.number(),
+  "passengerName": zod.string().optional(),
+  "status": zod.enum(['requested', 'accepted', 'rejected', 'picked_up', 'completed', 'cancelled']),
+  "pickupPoint": zod.string(),
+  "farePerSeat": zod.number().optional(),
+  "otp": zod.string(),
+  "notes": zod.string().nullish(),
+  "createdAt": zod.string()
+}),
+  "ride": zod.object({
+  "id": zod.number(),
+  "offererId": zod.number(),
+  "offererName": zod.string(),
+  "offererCollege": zod.string().optional(),
+  "offererVerified": zod.boolean().optional(),
+  "offererReliabilityScore": zod.number().optional(),
+  "status": zod.enum(['open', 'booking_requested', 'accepted', 'passenger_picked_up', 'ride_started', 'completed', 'cancelled']),
+  "origin": zod.string(),
+  "destination": zod.string(),
+  "waypoints": zod.array(zod.string()).optional(),
+  "date": zod.string(),
+  "time": zod.string(),
+  "vehicleType": zod.string(),
+  "vehicleNumber": zod.string(),
+  "fuelType": zod.string().optional(),
+  "totalSeats": zod.number(),
+  "seatsAvailable": zod.number(),
+  "farePerSeat": zod.number(),
+  "isRecurring": zod.boolean().optional(),
+  "notes": zod.string().nullish(),
+  "currentLat": zod.number().nullish(),
+  "currentLng": zod.number().nullish(),
+  "trackingToken": zod.string().nullish(),
   "createdAt": zod.string()
 })
-export const ListRidesResponse = zod.array(ListRidesResponseItem)
+})),
+  "completed": zod.array(zod.object({
+  "id": zod.number(),
+  "offererId": zod.number(),
+  "offererName": zod.string(),
+  "offererCollege": zod.string().optional(),
+  "offererVerified": zod.boolean().optional(),
+  "offererReliabilityScore": zod.number().optional(),
+  "status": zod.enum(['open', 'booking_requested', 'accepted', 'passenger_picked_up', 'ride_started', 'completed', 'cancelled']),
+  "origin": zod.string(),
+  "destination": zod.string(),
+  "waypoints": zod.array(zod.string()).optional(),
+  "date": zod.string(),
+  "time": zod.string(),
+  "vehicleType": zod.string(),
+  "vehicleNumber": zod.string(),
+  "fuelType": zod.string().optional(),
+  "totalSeats": zod.number(),
+  "seatsAvailable": zod.number(),
+  "farePerSeat": zod.number(),
+  "isRecurring": zod.boolean().optional(),
+  "notes": zod.string().nullish(),
+  "currentLat": zod.number().nullish(),
+  "currentLng": zod.number().nullish(),
+  "trackingToken": zod.string().nullish(),
+  "createdAt": zod.string()
+})),
+  "cancelled": zod.array(zod.object({
+  "id": zod.number(),
+  "offererId": zod.number(),
+  "offererName": zod.string(),
+  "offererCollege": zod.string().optional(),
+  "offererVerified": zod.boolean().optional(),
+  "offererReliabilityScore": zod.number().optional(),
+  "status": zod.enum(['open', 'booking_requested', 'accepted', 'passenger_picked_up', 'ride_started', 'completed', 'cancelled']),
+  "origin": zod.string(),
+  "destination": zod.string(),
+  "waypoints": zod.array(zod.string()).optional(),
+  "date": zod.string(),
+  "time": zod.string(),
+  "vehicleType": zod.string(),
+  "vehicleNumber": zod.string(),
+  "fuelType": zod.string().optional(),
+  "totalSeats": zod.number(),
+  "seatsAvailable": zod.number(),
+  "farePerSeat": zod.number(),
+  "isRecurring": zod.boolean().optional(),
+  "notes": zod.string().nullish(),
+  "currentLat": zod.number().nullish(),
+  "currentLng": zod.number().nullish(),
+  "trackingToken": zod.string().nullish(),
+  "createdAt": zod.string()
+}))
+})
 
 
-/**
- * @summary Get dashboard summary stats
- */
+export const GetRideParams = zod.object({
+  "id": zod.coerce.number()
+})
+
+export const GetRideResponse = zod.object({
+  "id": zod.number(),
+  "offererId": zod.number(),
+  "offererName": zod.string(),
+  "offererCollege": zod.string().optional(),
+  "offererVerified": zod.boolean().optional(),
+  "offererReliabilityScore": zod.number().optional(),
+  "status": zod.enum(['open', 'booking_requested', 'accepted', 'passenger_picked_up', 'ride_started', 'completed', 'cancelled']),
+  "origin": zod.string(),
+  "destination": zod.string(),
+  "waypoints": zod.array(zod.string()).optional(),
+  "date": zod.string(),
+  "time": zod.string(),
+  "vehicleType": zod.string(),
+  "vehicleNumber": zod.string(),
+  "fuelType": zod.string().optional(),
+  "totalSeats": zod.number(),
+  "seatsAvailable": zod.number(),
+  "farePerSeat": zod.number(),
+  "isRecurring": zod.boolean().optional(),
+  "notes": zod.string().nullish(),
+  "currentLat": zod.number().nullish(),
+  "currentLng": zod.number().nullish(),
+  "trackingToken": zod.string().nullish(),
+  "createdAt": zod.string()
+})
+
+
+export const BookRideParams = zod.object({
+  "id": zod.coerce.number()
+})
+
+export const BookRideBody = zod.object({
+  "pickupPoint": zod.string(),
+  "notes": zod.string().nullish()
+})
+
+
+export const GetRideBookingsParams = zod.object({
+  "id": zod.coerce.number()
+})
+
+export const GetRideBookingsResponseItem = zod.object({
+  "id": zod.number(),
+  "rideId": zod.number(),
+  "passengerId": zod.number(),
+  "passengerName": zod.string(),
+  "passengerCollege": zod.string(),
+  "passengerVerified": zod.boolean(),
+  "passengerReliabilityScore": zod.number().optional(),
+  "passengerPhoto": zod.string().nullish(),
+  "status": zod.string(),
+  "pickupPoint": zod.string(),
+  "farePerSeat": zod.number().optional(),
+  "otp": zod.string(),
+  "notes": zod.string().nullish(),
+  "createdAt": zod.string()
+})
+export const GetRideBookingsResponse = zod.array(GetRideBookingsResponseItem)
+
+
+export const CancelRideParams = zod.object({
+  "id": zod.coerce.number()
+})
+
+export const CancelRideResponse = zod.object({
+  "message": zod.string(),
+  "demoToken": zod.string().nullish(),
+  "demoOtp": zod.string().nullish()
+})
+
+
+export const UpdateRideLocationParams = zod.object({
+  "id": zod.coerce.number()
+})
+
+export const UpdateRideLocationBody = zod.object({
+  "lat": zod.number(),
+  "lng": zod.number()
+})
+
+export const UpdateRideLocationResponse = zod.object({
+  "message": zod.string(),
+  "demoToken": zod.string().nullish(),
+  "demoOtp": zod.string().nullish()
+})
+
+
+export const AcceptBookingParams = zod.object({
+  "id": zod.coerce.number()
+})
+
+export const AcceptBookingResponse = zod.object({
+  "id": zod.number(),
+  "rideId": zod.number(),
+  "passengerId": zod.number(),
+  "passengerName": zod.string().optional(),
+  "status": zod.enum(['requested', 'accepted', 'rejected', 'picked_up', 'completed', 'cancelled']),
+  "pickupPoint": zod.string(),
+  "farePerSeat": zod.number().optional(),
+  "otp": zod.string(),
+  "notes": zod.string().nullish(),
+  "createdAt": zod.string()
+})
+
+
+export const RejectBookingParams = zod.object({
+  "id": zod.coerce.number()
+})
+
+export const RejectBookingResponse = zod.object({
+  "message": zod.string(),
+  "demoToken": zod.string().nullish(),
+  "demoOtp": zod.string().nullish()
+})
+
+
+export const VerifyRideOtpParams = zod.object({
+  "id": zod.coerce.number()
+})
+
+export const VerifyRideOtpBody = zod.object({
+  "otp": zod.string()
+})
+
+export const VerifyRideOtpResponse = zod.object({
+  "message": zod.string(),
+  "demoToken": zod.string().nullish(),
+  "demoOtp": zod.string().nullish()
+})
+
+
+export const CompleteBookingParams = zod.object({
+  "id": zod.coerce.number()
+})
+
+export const CompleteBookingResponse = zod.object({
+  "message": zod.string(),
+  "demoToken": zod.string().nullish(),
+  "demoOtp": zod.string().nullish()
+})
+
+
+export const GetConversationsResponseItem = zod.object({
+  "userId": zod.number(),
+  "userName": zod.string(),
+  "userCollege": zod.string().optional(),
+  "userPhoto": zod.string().nullish(),
+  "isVerified": zod.boolean().optional(),
+  "lastMessage": zod.string(),
+  "unreadCount": zod.number(),
+  "updatedAt": zod.string()
+})
+export const GetConversationsResponse = zod.array(GetConversationsResponseItem)
+
+
+export const GetMessagesQueryParams = zod.object({
+  "userId": zod.coerce.number()
+})
+
+export const GetMessagesResponseItem = zod.object({
+  "id": zod.number(),
+  "senderId": zod.number(),
+  "senderName": zod.string().optional(),
+  "receiverId": zod.number(),
+  "content": zod.string(),
+  "isRead": zod.boolean(),
+  "createdAt": zod.string()
+})
+export const GetMessagesResponse = zod.array(GetMessagesResponseItem)
+
+
+export const SendMessageBody = zod.object({
+  "receiverId": zod.number(),
+  "content": zod.string()
+})
+
+
+export const MarkMessagesReadBody = zod.object({
+  "senderId": zod.number()
+})
+
+export const MarkMessagesReadResponse = zod.object({
+  "message": zod.string(),
+  "demoToken": zod.string().nullish(),
+  "demoOtp": zod.string().nullish()
+})
+
+
+export const ListTrustedContactsResponseItem = zod.object({
+  "id": zod.number(),
+  "userId": zod.number(),
+  "name": zod.string(),
+  "phone": zod.string(),
+  "relationship": zod.enum(['parent', 'guardian', 'friend', 'sibling', 'other']),
+  "createdAt": zod.string()
+})
+export const ListTrustedContactsResponse = zod.array(ListTrustedContactsResponseItem)
+
+
+export const AddTrustedContactBody = zod.object({
+  "name": zod.string(),
+  "phone": zod.string(),
+  "relationship": zod.enum(['parent', 'guardian', 'friend', 'sibling', 'other'])
+})
+
+
+export const DeleteTrustedContactParams = zod.object({
+  "id": zod.coerce.number()
+})
+
+export const DeleteTrustedContactResponse = zod.object({
+  "message": zod.string(),
+  "demoToken": zod.string().nullish(),
+  "demoOtp": zod.string().nullish()
+})
+
+
+export const GetPublicTripParams = zod.object({
+  "token": zod.coerce.string()
+})
+
+export const GetPublicTripResponse = zod.object({
+  "rideId": zod.number(),
+  "driverName": zod.string(),
+  "vehicleType": zod.string(),
+  "vehicleNumber": zod.string(),
+  "origin": zod.string(),
+  "destination": zod.string(),
+  "status": zod.string(),
+  "currentLat": zod.number().nullish(),
+  "currentLng": zod.number().nullish(),
+  "eta": zod.string().nullish(),
+  "createdAt": zod.string()
+})
+
+
 export const GetDashboardSummaryResponse = zod.object({
   "communitiesJoined": zod.number(),
   "upcomingEvents": zod.number(),
   "activeRides": zod.number(),
   "verificationStatus": zod.enum(['incomplete', 'pending', 'verified']),
+  "totalRidesOffered": zod.number().optional(),
+  "totalRidesBooked": zod.number().optional(),
   "totalCommunityMembers": zod.number().optional()
 })
 
