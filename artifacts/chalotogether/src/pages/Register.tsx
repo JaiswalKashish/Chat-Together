@@ -4,7 +4,7 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
 import { motion, AnimatePresence } from "framer-motion";
-import { ChevronRight, ArrowLeft } from "lucide-react";
+import { ChevronRight, ArrowLeft, Eye, EyeOff } from "lucide-react";
 import { useRegisterUser, useListColleges } from "@workspace/api-client-react";
 import { useAuth } from "@/contexts/AuthContext";
 import { useToast } from "@/hooks/use-toast";
@@ -63,6 +63,8 @@ export function Register() {
     : hardcodedColleges;
 
   const [step, setStep] = useState(1);
+  const [showPassword, setShowPassword] = useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
 
   const form = useForm<FormValues>({
     resolver: zodResolver(registerSchema),
@@ -271,7 +273,14 @@ export function Register() {
                     <FormField control={form.control} name="password" render={({ field }) => (
                       <FormItem>
                         <FormLabel>Password</FormLabel>
-                        <FormControl><Input type="password" placeholder="••••••••" {...field} /></FormControl>
+                        <FormControl>
+                          <div className="relative">
+                            <Input type={showPassword ? "text" : "password"} placeholder="Min 8 characters" className="pr-10" data-testid="input-password" {...field} />
+                            <button type="button" onClick={() => setShowPassword(v => !v)} className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground" tabIndex={-1}>
+                              {showPassword ? <EyeOff size={16} /> : <Eye size={16} />}
+                            </button>
+                          </div>
+                        </FormControl>
                         <FormMessage />
                       </FormItem>
                     )} />
@@ -279,7 +288,14 @@ export function Register() {
                     <FormField control={form.control} name="confirmPassword" render={({ field }) => (
                       <FormItem>
                         <FormLabel>Confirm Password</FormLabel>
-                        <FormControl><Input type="password" placeholder="••••••••" {...field} /></FormControl>
+                        <FormControl>
+                          <div className="relative">
+                            <Input type={showConfirmPassword ? "text" : "password"} placeholder="Re-enter password" className="pr-10" data-testid="input-confirm-password" {...field} />
+                            <button type="button" onClick={() => setShowConfirmPassword(v => !v)} className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground" tabIndex={-1}>
+                              {showConfirmPassword ? <EyeOff size={16} /> : <Eye size={16} />}
+                            </button>
+                          </div>
+                        </FormControl>
                         <FormMessage />
                       </FormItem>
                     )} />
