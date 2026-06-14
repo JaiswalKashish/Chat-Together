@@ -214,7 +214,8 @@ router.post("/auth/resend-verification", async (req, res): Promise<void> => {
     .set({ emailVerificationToken: newToken, emailVerificationExpiry: expiry })
     .where(eq(usersTable.email, email));
 
-  res.json({ message: "Verification email sent" });
+  // Demo mode: return the token directly since no email service is configured
+  res.json({ message: "Verification code generated (demo mode — no email service configured)", demoToken: newToken });
 });
 
 // POST /auth/send-phone-otp
@@ -234,8 +235,9 @@ router.post("/auth/send-phone-otp", async (req, res): Promise<void> => {
     .set({ phoneOtp: otp, phoneOtpExpiry: expiry })
     .where(eq(usersTable.phone, phone));
 
-  req.log.info({ phone: phone.slice(-4) }, "OTP sent (demo mode)");
-  res.json({ message: `OTP sent to ${phone.slice(0, 3)}****${phone.slice(-4)}` });
+  req.log.info({ phone: phone.slice(-4) }, "OTP generated (demo mode)");
+  // Demo mode: return the OTP directly since no SMS service is configured
+  res.json({ message: `OTP generated (demo mode — no SMS service configured)`, demoOtp: otp });
 });
 
 // POST /auth/verify-phone
