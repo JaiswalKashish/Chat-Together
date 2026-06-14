@@ -358,6 +358,14 @@ export async function customFetch<T = unknown>(
     }
   }
 
+  // Fallback to reading ct_token from localStorage
+  if (typeof window !== "undefined" && !headers.has("authorization")) {
+    const ctToken = localStorage.getItem("ct_token");
+    if (ctToken) {
+      headers.set("authorization", `Bearer ${ctToken}`);
+    }
+  }
+
   const requestInfo = { method, url: resolveUrl(input) };
 
   const response = await fetch(input, { ...init, method, headers });

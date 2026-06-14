@@ -1,0 +1,461 @@
+CHALOTOGETHER PHASE 1 – LANDING PAGE + AUTHENTICATION + STUDENT VERIFICATION
+
+Build the first version of ChaloTogether from scratch.
+
+IMPORTANT:
+
+This is a real production project.
+
+Do not generate fake users.
+
+Do not generate fake rides.
+
+Do not generate fake statistics.
+
+Do not generate fake leaderboard entries.
+
+Do not generate demo communities.
+
+Use proper empty states when data is unavailable.
+
+==================================================
+
+PRODUCT NAME
+
+CHALOTOGETHER
+
+Tagline:
+
+Making College Travel Safer, Smarter, and More Affordable
+
+==================================================
+
+LAUNCH REGION
+
+Chennai, Tamil Nadu
+
+ChaloTogether is a student mobility platform designed for college students across Chennai.
+
+The platform should support verified students from Chennai colleges.
+
+Default supported colleges:
+
+* SRM Institute of Science and Technology (Ramapuram)
+* IIT Madras
+* Anna University
+* Loyola College
+* Sathyabama Institute of Science and Technology
+* Saveetha Engineering College
+* Vels Institute of Science, Technology & Advanced Studies
+* Hindustan Institute of Technology and Science
+* Madras Christian College
+* D.G. Vaishnav College
+
+Future colleges should be easily added through an admin panel.
+
+==================================================
+
+UI DESIGN
+
+Design Style:
+
+* Modern Startup
+* Uber Inspired
+* Airbnb Inspired
+* Linear Inspired
+
+Theme:
+
+* Premium Dark Theme
+* Blue Gradient Accents
+* Glassmorphism
+* Smooth Animations
+* Mobile Responsive
+
+Use Framer Motion animations.
+
+Add attractive floating icons throughout the landing page:
+
+* Car
+* Students
+* Location Pin
+* Shield
+* College Building
+* Route Map
+* Event Calendar
+
+Icons should gently float and animate.
+
+==================================================
+
+LANDING PAGE
+
+Landing page is ONLY for visitors.
+
+Do not show:
+
+* Dashboard
+* Communities
+* Events Dashboard
+* Find Ride
+* Offer Ride
+* Request Ride
+* Leaderboard
+
+before login.
+
+==================================================
+
+NAVBAR
+
+Left:
+
+🚗 ChaloTogether Logo
+
+Center:
+
+* How It Works
+* Colleges
+* Safety
+* Events
+* About Us
+
+Right:
+
+* Login
+* Sign Up
+
+Sticky Navbar
+
+Smooth scrolling navigation.
+
+When clicking navbar items:
+
+Scroll to corresponding sections.
+
+==================================================
+
+HERO SECTION
+
+Heading:
+
+CHALOTOGETHER
+
+Subheading:
+
+The Student Mobility Network for Chennai Colleges
+
+Description:
+
+Travel safely, save money, join ride pools for exams, workshops, placements, and college events with verified students across Chennai.
+
+Buttons:
+
+Get Started
+
+Join Your College
+
+Hero section should include:
+
+* Animated route lines
+* Floating icons
+* Modern illustrations
+* Attractive visual effects
+
+==================================================
+
+HOW IT WORKS SECTION
+
+Step 1
+
+Verify Your Student Identity
+
+Step 2
+
+Join Your College Community
+
+Step 3
+
+Find or Offer Rides
+
+Step 4
+
+Travel Safely and Save Money
+
+Display interactive cards with icons.
+
+==================================================
+
+SUPPORTED COLLEGES SECTION
+
+Display attractive cards for:
+
+* SRM Ramapuram
+* IIT Madras
+* Anna University
+* Loyola College
+* Saveetha Engineering College
+* Sathyabama Institute
+* Vels Institute
+* Hindustan Institute
+* Madras Christian College
+* D.G. Vaishnav College
+
+Each card should show:
+
+* College Logo Placeholder
+* College Name
+* Verified Community Badge
+
+Display text:
+
+"Expanding across Chennai colleges."
+
+==================================================
+
+SAFETY SECTION
+
+Display cards:
+
+* Verified Students
+* Student ID Verification
+* Email Verification
+* Phone Verification
+* Women Only Rides
+* SOS Emergency Support
+* Trusted Contacts
+
+==================================================
+
+EVENTS SECTION
+
+Explain:
+
+* Exam Ride Pools
+* Placement Transportation
+* Workshop Travel
+* Hackathon Travel
+* College Fest Travel
+
+Use attractive cards and icons.
+
+==================================================
+
+ABOUT US
+
+Explain ChaloTogether mission.
+
+Focus on:
+
+* Student Safety
+* Cost Savings
+* Sustainability
+* Community
+
+==================================================
+
+FOOTER
+
+Include:
+
+* About
+* Privacy Policy
+* Terms
+* Contact
+* Social Links
+
+==================================================
+
+AUTHENTICATION SYSTEM
+
+Create Login and Registration pages.
+
+==================================================
+
+REGISTRATION
+
+Fields:
+
+* Full Name
+* College
+* Department
+* Year
+* Email
+* Phone Number
+* Password
+* Confirm Password
+* Student ID Card Upload
+* Profile Photo Upload
+
+==================================================
+
+COLLEGE VERIFICATION
+
+Students must register using:
+
+* Student ID Card
+* Email Verification
+* Phone Verification
+
+The college selected during registration must match the college identified from the uploaded student ID card.
+
+If mismatch occurs:
+
+"College verification failed. Please upload a valid student ID card."
+
+==================================================
+
+STUDENT VERIFICATION
+
+Create verification workflow.
+
+Step 1
+
+Upload Student ID Card
+
+OR
+
+Scan Student ID Card using camera
+
+Display preview.
+
+Prepare backend structure for OCR extraction.
+
+Store:
+
+* Student Name
+* Roll Number
+* College Name
+* Verification Status
+
+==================================================
+
+EMAIL VERIFICATION
+
+Create email verification workflow.
+
+Status:
+
+Pending
+
+Verified
+
+==================================================
+
+PHONE VERIFICATION
+
+Create phone verification workflow.
+
+Status:
+
+Pending
+
+Verified
+
+==================================================
+
+ACCOUNT CREATION
+
+User account should only become active when:
+
+✓ Student ID Uploaded
+
+✓ Email Verified
+
+✓ Phone Verified
+
+Display:
+
+Verified Student ✓
+
+==================================================
+
+COMMUNITIES
+
+Communities should be automatically generated based on colleges.
+
+Examples:
+
+* SRM Ramapuram Community
+* IIT Madras Community
+* Anna University Community
+* Loyola College Community
+
+Students should automatically be suggested to join their college community after verification.
+
+Only verified students may join communities.
+
+==================================================
+
+LOGIN PAGE
+
+Modern split-screen design.
+
+Left:
+
+ChaloTogether branding
+
+Right:
+
+Login form
+
+Options:
+
+* Email Login
+* Phone Login
+* Forgot Password
+* Create Account
+
+==================================================
+
+AFTER LOGIN
+
+Redirect to Dashboard.
+
+DO NOT build ride functionality yet.
+
+Only create dashboard structure and navigation.
+
+Navbar:
+
+* Dashboard
+* Communities
+* Events
+* My Rides
+* Leaderboard
+
+Buttons:
+
+* Find Ride
+* Offer Ride
+* Request Ride
+
+Profile Dropdown
+
+Create empty pages for now.
+
+==================================================
+
+EMPTY STATES
+
+Communities:
+
+"No communities joined yet."
+
+Events:
+
+"No events available."
+
+My Rides:
+
+"No rides available."
+
+Leaderboard:
+
+"No leaderboard data available."
+
+Never display fake content.
+
+==================================================
+
+The final result should look like a professional startup website and real SaaS product built for verified Chennai college students, not an AI-generated template.
