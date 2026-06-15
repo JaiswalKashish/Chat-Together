@@ -7,34 +7,58 @@
 chat-together--kj9430484703.replit.app⁠�
 
 
-📖 About ChaloTogether
+                          📖 About ChaloTogether
+                          
 ChaloTogether is a student-focused mobility platform designed to make daily college commuting safer, more affordable, sustainable, and community-driven.
+
 The platform connects verified college students traveling on similar routes and enables them to share rides, reduce transportation costs, and build trusted college communities.
 Unlike traditional ride-hailing platforms, ChaloTogether focuses specifically on students and academic transportation requirements such as:
+
 📚 Exams
+
 🎓 Placements
+
 💻 Workshops
+
 🚀 Hackathons
+
 🎉 College Fests
+
 🏫 Daily Commutes
-🎯 Problem Statement
+
+                             🎯 Problem Statement
+                             
 Thousands of students commute daily across Chennai using expensive and inefficient transportation options.
 Current challenges include:
+
 ❌ High travel expenses
+
 ❌ Safety concerns
+
 ❌ Traffic congestion
+
 ❌ Empty vehicle seats going unused
+
 ❌ Lack of ride coordination among students
+
 ❌ No dedicated transportation platform for educational institutions
 ChaloTogether solves these challenges by creating a Verified Student Mobility Network where students can safely connect, share rides, and travel together.
-✨ Current Features
+
+
+                                 ✨ Current Features
 🔐 Student Verification System
+
 College ID Verification
+
 Student Registration
+
 Email Verification
+
 Phone Verification
+
 Verified Student Badge
-👨‍🎓 Student Profiles
+
+                                 👨‍🎓 Student Profiles
 Each profile includes:
 Name
 Department
