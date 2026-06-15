@@ -5,6 +5,8 @@
 🌐 Live Demo
 🚀 Website:
 chat-together--kj9430484703.replit.app⁠�
+
+
 📖 About ChaloTogether
 ChaloTogether is a student-focused mobility platform designed to make daily college commuting safer, more affordable, sustainable, and community-driven.
 The platform connects verified college students traveling on similar routes and enables them to share rides, reduce transportation costs, and build trusted college communities.
