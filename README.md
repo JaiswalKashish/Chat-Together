@@ -61,63 +61,117 @@ Verified Student Badge
                                  👨‍🎓 Student Profiles
 Each profile includes:
 Name
+
 Department
+
 College
+
 Academic Year
+
 Ratings
+
 Reliability Score
+
 Ride History
+
 🚗 Ride Sharing
+
 Students can:
+
 Offer rides
+
 Find rides
+
 Book rides
+
 Request rides
+
 Supported Vehicles:
+
 🚘 Car
+
 🏍️ Bike
+
 🛵 Scooter
+
 🚖 Auto
+
 ⚡ E-Rickshaw
+
 🚐 Van
+
 🗺️ Smart Route Matching
+
 Students traveling on similar routes can be automatically matched.
 Example:
+
 Tambaram ➜ Vadapalani ➜ Porur ➜ SRM
+
 A student joining midway can be matched with the same ride.
 💬 Student Messaging
+
 Real-time communication between:
 Drivers
 Passengers
+
 Community Members
-👥 College Communities
+
+                           👥 College Communities
+                           
 Dedicated communities for Chennai colleges:
+
 SRM Ramapuram
+
 IIT Madras
+
 Anna University
+
 Loyola College
+
 Sathyabama
+
 Saveetha
+
 MCC
+
 Vels
+
 Hindustan Institute
-📅 Event Transportation
+
+                                 📅 Event Transportation
+                                 
 Students can create or join transportation pools for:
+
 Exams
-Workshops
+
+Workshop
+
 Hackathons
+
 Placements
+
 Seminars
+
 College Festivals
-📊 Dashboard
+
+                   .                       📊 Dashboard
+                   
 Track:
+
 Total Rides
+
 Money Saved
+
 Ride History
+
 Community Activity
+
 Sustainability Impact
-🛠️ Technology Stack
+
+                                         🛠️ Technology Stack
+                                         
 Frontend
+
 React.js
 TypeScript
 Tailwind CSS
@@ -136,7 +190,8 @@ Maps & Navigation
 Google Maps API
 Directions API
 Geolocation API
-🚀 Future Roadmap
+
+                                               🚀 Future Roadmap
 🤖 AI Route Matching Engine
 Advanced route intelligence:
 Route overlap detection
@@ -199,18 +254,26 @@ Future Android & iOS application with:
 Push Notifications
 Live Tracking
 Offline Ride Access
-🎯 Vision
+
+                                     🎯 Vision
+    
 To become the most trusted student mobility ecosystem in India by providing:
 ✅ Safe Transportation
+
 ✅ Affordable Travel
+
 ✅ Verified Student Communities
+
 ✅ Sustainable Commuting
+
 ✅ Event-Based Ride Pooling
+
 ✅ Smart Mobility Solutions
 
 👨‍💻 Developer
 Project Name: ChaloTogether
 Mission: Connecting students through safe, affordable, and sustainable transportation.
 
-"Travel Together. Save Together. Grow Together." 🚗💙
-ChaloTogether – The Student Mobility Network for Chennai Colleges. 🎓🌍
+       
+            "Travel Together. Save Together. Grow Together." 🚗💙
+     ChaloTogether – The Student Mobility Network for Chennai Colleges. 🎓🌍
