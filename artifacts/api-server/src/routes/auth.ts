@@ -1,6 +1,6 @@
 import { Router } from "express";
 import { eq, or } from "drizzle-orm";
-import { db, usersTable } from "@workspace/db";
+import { db, usersTable, communitiesTable, communityMembersTable, collegesTable } from "@workspace/db";
 import {
   RegisterUserBody,
   LoginUserBody,
@@ -12,6 +12,66 @@ import {
 import { hashPassword, comparePassword, signToken, requireAuth, generateOtp, generateToken } from "../lib/auth";
 
 const router = Router();
+
+async function autoAssignCommunity(userId: number, collegeName: string) {
+  try {
+    // Find the college record by name
+    const [college] = await db
+      .select()
+      .from(collegesTable)
+      .where(eq(collegesTable.name, collegeName))
+      .limit(1);
+
+    if (!college) return;
+
+    // Find existing community for this college, or create one
+    let [community] = await db
+      .select()
+      .from(communitiesTable)
+      .where(eq(communitiesTable.collegeId, college.id))
+      .limit(1);
+
+    if (!community) {
+      [community] = await db
+        .insert(communitiesTable)
+        .values({
+          name: `${college.name} Community`,
+          collegeId: college.id,
+          description: `Official verified student community for ${college.name}`,
+          memberCount: 0,
+        })
+        .returning();
+    }
+
+    // Add user to community if not already a member
+    const existing = await db
+      .select()
+      .from(communityMembersTable)
+      .where(eq(communityMembersTable.userId, userId))
+      .limit(1);
+
+    if (existing.length === 0) {
+      await db.insert(communityMembersTable).values({
+        communityId: community.id,
+        userId,
+      });
+
+      // Update member count
+      const allMembers = await db
+        .select()
+        .from(communityMembersTable)
+        .where(eq(communityMembersTable.communityId, community.id));
+
+      await db
+        .update(communitiesTable)
+        .set({ memberCount: allMembers.length })
+        .where(eq(communitiesTable.id, community.id));
+    }
+  } catch (err) {
+    // Non-fatal — log but don't break registration
+    console.error("Community auto-assign failed:", err);
+  }
+}
 
 // POST /auth/register
 router.post("/auth/register", async (req, res): Promise<void> => {
@@ -45,6 +105,9 @@ router.post("/auth/register", async (req, res): Promise<void> => {
     emailVerificationExpiry,
   }).returning();
 
+  // Auto-assign to college community
+  await autoAssignCommunity(user.id, college);
+
   const token = signToken(user.id);
 
   res.status(201).json({
@@ -64,6 +127,7 @@ router.post("/auth/register", async (req, res): Promise<void> => {
       createdAt: user.createdAt.toISOString(),
     },
     token,
+    emailVerificationToken,
   });
 });
 
@@ -214,8 +278,7 @@ router.post("/auth/resend-verification", async (req, res): Promise<void> => {
     .set({ emailVerificationToken: newToken, emailVerificationExpiry: expiry })
     .where(eq(usersTable.email, email));
 
-  // Demo mode: return the token directly since no email service is configured
-  res.json({ message: "Verification code generated (demo mode — no email service configured)", demoToken: newToken });
+  res.json({ message: "Verification code generated (demo mode)", demoToken: newToken });
 });
 
 // POST /auth/send-phone-otp
@@ -236,8 +299,7 @@ router.post("/auth/send-phone-otp", async (req, res): Promise<void> => {
     .where(eq(usersTable.phone, phone));
 
   req.log.info({ phone: phone.slice(-4) }, "OTP generated (demo mode)");
-  // Demo mode: return the OTP directly since no SMS service is configured
-  res.json({ message: `OTP generated (demo mode — no SMS service configured)`, demoOtp: otp });
+  res.json({ message: "OTP generated (demo mode)", demoOtp: otp });
 });
 
 // POST /auth/verify-phone

@@ -13,6 +13,7 @@ import { useToast } from "@/hooks/use-toast";
 import { useCreateRide } from "@workspace/api-client-react";
 import { ArrowLeft, Car, Fuel, MapPin, Users, IndianRupee, Plus, X, Loader2, Route } from "lucide-react";
 import { motion } from "framer-motion";
+import { RouteMap } from "@/components/RouteMap";
 
 const schema = z.object({
   origin: z.string().min(2, "Enter origin"),
@@ -56,6 +57,9 @@ export function OfferRide() {
 
   const isRecurring = form.watch("isRecurring");
   const vehicleType = form.watch("vehicleType");
+  const watchedOrigin = form.watch("origin");
+  const watchedDestination = form.watch("destination");
+  const showMap = watchedOrigin?.length >= 3 && watchedDestination?.length >= 3;
 
   function addWaypoint() {
     const val = waypointInput.trim();
@@ -152,6 +156,16 @@ export function OfferRide() {
                 <Input {...form.register("destination")} placeholder="e.g., SRM Ramapuram" className="mt-1 bg-background border-border/50" />
                 {form.formState.errors.destination && <p className="text-xs text-red-400 mt-1">{form.formState.errors.destination.message}</p>}
               </div>
+
+              {showMap && (
+                <RouteMap
+                  origin={watchedOrigin}
+                  destination={watchedDestination}
+                  waypoints={waypoints}
+                  height="220px"
+                  className="mt-2"
+                />
+              )}
             </div>
           </motion.div>
 

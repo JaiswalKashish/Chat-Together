@@ -10,6 +10,7 @@ import { useSearchRides, useBookRide } from "@workspace/api-client-react";
 import type { RideDetail } from "@workspace/api-client-react";
 import { Search, MapPin, Clock, Users, IndianRupee, Star, CheckCircle2, ArrowRight, Loader2, Car } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
+import { RouteMap } from "@/components/RouteMap";
 
 export function FindRide() {
   const [, navigate] = useLocation();
@@ -222,10 +223,16 @@ export function FindRide() {
             </DialogHeader>
             {selectedRide && (
               <div className="space-y-4">
+                <RouteMap
+                  origin={selectedRide.origin}
+                  destination={selectedRide.destination}
+                  waypoints={selectedRide.waypoints ?? []}
+                  height="180px"
+                  showInfo={false}
+                />
                 <div className="bg-secondary/30 rounded-lg p-4 text-sm">
-                  <p className="text-muted-foreground">{selectedRide.origin} → {selectedRide.destination}</p>
-                  <p className="font-medium mt-1">Driver: {selectedRide.offererName}</p>
-                  <p className="text-muted-foreground">{selectedRide.date} at {selectedRide.time}</p>
+                  <p className="font-medium">{selectedRide.origin} → {selectedRide.destination}</p>
+                  <p className="text-muted-foreground mt-0.5">Driver: {selectedRide.offererName} · {selectedRide.date} at {selectedRide.time}</p>
                   <p className="text-primary font-bold mt-2">₹{selectedRide.farePerSeat} per seat</p>
                 </div>
                 <div>

@@ -1,0 +1,576 @@
+CHALOTOGETHER PHASE 2 – FUNCTIONALITY FIXES & CORE PLATFORM INTEGRATION
+IMPORTANT
+
+This is a real production project.
+
+Do NOT create mock data.
+
+Do NOT create fake users.
+
+Do NOT create fake rides.
+
+Do NOT create fake communities.
+
+Do NOT create fake messages.
+
+Do NOT generate sample statistics.
+
+Every module must work with real database records.
+
+Fix existing functionality before adding any new features.
+
+TOP NAVIGATION REDESIGN
+
+Remove the current left sidebar navigation.
+
+Implement a professional top navigation bar similar to Uber, Airbnb, and modern SaaS applications.
+
+Navbar Layout:
+
+[ChaloTogether Logo]
+
+Dashboard
+Communities
+Events
+Messages
+My Rides
+Leaderboard
+
+[Find Ride]
+[Offer Ride]
+[Request Ride]
+
+Profile ▼
+
+Requirements:
+
+Sticky top navbar
+Responsive on mobile and desktop
+Blue CTA buttons
+Smooth navigation
+Active page highlighting
+EMAIL OTP VERIFICATION
+
+Current issue:
+
+OTP verification is not functional.
+
+Implement real email verification flow.
+
+Workflow:
+
+User enters email
+Generate 6-digit OTP
+Send OTP to email
+Store OTP securely
+Verify entered OTP
+Mark email_verified = true
+
+Database:
+
+email_verified BOOLEAN
+email_otp VARCHAR
+otp_expiry TIMESTAMP
+
+User account cannot become active until email verification succeeds.
+
+PHONE OTP VERIFICATION
+
+Current issue:
+
+Phone verification is not functional.
+
+Implement real phone verification.
+
+Workflow:
+
+User enters phone number
+Generate OTP
+Send OTP through SMS provider
+Verify OTP
+Mark phone_verified = true
+
+Database:
+
+phone_verified BOOLEAN
+phone_otp VARCHAR
+otp_expiry TIMESTAMP
+STUDENT VERIFICATION
+
+Student ID upload must be functional.
+
+Workflow:
+
+Upload ID Card
+Store image securely
+OCR-ready backend structure
+Extract:
+Student Name
+Roll Number
+College Name
+
+Store:
+
+student_name
+roll_number
+college_name
+verification_status
+
+Only verified students may use ride features.
+
+COMMUNITY SYSTEM FIX
+
+Current issue:
+
+Communities are showing static colleges.
+
+Communities must be generated from real users.
+
+Workflow:
+
+When student registers:
+
+College:
+SRM Ramapuram
+
+System:
+
+Find Existing Community
+
+If Exists:
+Add User
+
+If Not Exists:
+Create Community
+
+Database:
+
+community_id
+community_name
+college_name
+member_count
+COMMUNITY MEMBERS TAB
+
+Display actual members.
+
+Show:
+
+Profile Photo
+Name
+Department
+Year
+Verified Badge
+
+Only verified students.
+
+No placeholder users.
+
+No fake names.
+
+COMMUNITY CHAT
+
+Create real-time community chat.
+
+Features:
+
+Send Message
+Receive Message
+Online Status
+Notifications
+
+Use:
+
+Socket.io
+
+Store messages in database.
+
+SEPARATE MESSAGES MODULE
+
+Create dedicated navbar item:
+
+Messages
+
+Features:
+
+Student to Student Chat
+Driver to Passenger Chat
+Ride-specific Conversations
+
+Backend:
+
+POST /messages/send
+
+GET /messages/conversation
+
+Use Socket.io.
+
+OFFER RIDE FIX
+
+Current issue:
+
+Offered rides are not visible to other users.
+
+Workflow:
+
+Driver creates ride.
+
+Store in database:
+
+ride_id
+driver_id
+source
+destination
+date
+time
+available_seats
+status
+
+Ride must immediately appear in search results.
+
+GOOGLE MAPS ROUTE DISPLAY
+
+Current issue:
+
+Map does not display actual route.
+
+Implement:
+
+Google Maps
+
+Google Directions API
+
+When ride created:
+
+Generate:
+
+Route
+Distance
+Duration
+Polyline
+
+Display Uber-style route map.
+
+Show:
+
+Start Point
+Route Line
+Destination
+FIND RIDE FIX
+
+Current issue:
+
+Users cannot see rides offered by other users.
+
+Workflow:
+
+User searches:
+
+Pickup
+Destination
+Date
+Time
+
+Backend:
+
+Search database for matching rides.
+
+Return real rides only.
+
+No dummy data.
+
+AI ROUTE MATCHING
+
+Match based on:
+
+Same destination
+Similar route
+Intermediate pickup points
+Time overlap
+
+Example:
+
+Driver:
+
+Tambaram → Chromepet → Guindy → Vadapalani → Porur → SRM
+
+Passenger:
+
+Vadapalani → SRM
+
+Result:
+
+95% Match
+
+RIDE BOOKING SYSTEM
+
+Current issue:
+
+Passenger cannot book ride.
+
+Implement:
+
+Button:
+
+Book Ride
+
+Workflow:
+
+Passenger sends booking request.
+
+Database:
+
+booking_id
+ride_id
+passenger_id
+status
+
+Statuses:
+
+Pending
+
+Accepted
+
+Rejected
+
+Completed
+
+Cancelled
+
+DRIVER BOOKING REQUESTS
+
+Driver Dashboard:
+
+Show:
+
+Passenger Name
+
+Pickup Point
+
+Destination
+
+Accept
+
+Reject
+
+Driver must be able to manage requests.
+
+BOOKING CONFIRMATION
+
+When driver accepts:
+
+Passenger sees:
+
+Booking Confirmed
+
+Driver Name
+
+Vehicle Number
+
+Pickup Point
+
+ETA
+
+Fare
+CONTACT DRIVER
+
+After booking confirmation only.
+
+Show:
+
+Message Driver
+
+Call Driver
+
+Do not expose driver contact details before booking.
+
+OTP PICKUP VERIFICATION
+
+Generate unique ride OTP.
+
+Example:
+
+3481
+
+Passenger sees OTP.
+
+Driver enters OTP during pickup.
+
+If OTP matches:
+
+Status:
+
+Passenger Picked Up
+
+Then:
+
+Ride Started
+LIVE LOCATION TRACKING
+
+Implement Uber-style tracking.
+
+Driver App:
+
+navigator.geolocation.watchPosition()
+
+Send location updates through Socket.io.
+
+Passenger sees:
+
+Driver Marker
+Current Route
+ETA
+Remaining Distance
+SHARE TRIP FEATURE
+
+Button:
+
+Share Trip
+
+Generate secure tracking link.
+
+Example:
+
+https://chalotogether.com/trip/abc123
+
+Shared contact can view:
+
+Driver Name
+Vehicle
+Live Location
+ETA
+Destination
+
+Without login.
+
+TRUSTED CONTACTS
+
+Allow users to add:
+
+Parent
+Guardian
+Friend
+
+Store:
+
+name
+phone
+relationship
+SOS SYSTEM
+
+One-click SOS button.
+
+When pressed:
+
+Send:
+
+Current Location
+Driver Information
+Vehicle Information
+Trip Details
+
+To trusted contacts.
+
+MY RIDES
+
+Create tabs:
+
+Upcoming
+
+Booked
+
+Offered
+
+Completed
+
+Cancelled
+
+Driver View:
+
+Passengers Joined
+
+Available Seats
+
+Ride Status
+
+Passenger View:
+
+Driver
+
+Vehicle
+
+Pickup Point
+
+OTP
+
+Ride Status
+REAL-TIME EVENTS
+
+Use Socket.io for:
+
+New Ride
+Booking Request
+Booking Accepted
+Booking Rejected
+Ride Started
+Ride Completed
+New Message
+Live Location Updates
+EMPTY STATES
+
+Never display fake data.
+
+Examples:
+
+No rides available yet.
+
+No booking requests yet.
+
+No community members found.
+
+No conversations available.
+FINAL REQUIREMENT
+
+Fix and connect all modules end-to-end.
+
+The flow below must work with two real user accounts:
+
+User A Registers
+↓
+
+User A Offers Ride
+↓
+
+Ride Saved To Database
+↓
+
+User B Registers
+↓
+
+User B Finds Ride
+↓
+
+User B Books Ride
+↓
+
+User A Receives Request
+↓
+
+User A Accepts
+↓
+
+Chat Enabled
+↓
+
+OTP Generated
+↓
+
+Pickup Verified
+↓
+
+Live Tracking Starts
+↓
+
+Trip Shared With Trusted Contact
+↓
+
+Ride Completed
